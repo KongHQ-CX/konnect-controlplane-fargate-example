@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_PAGER: ""
+  AWS_REGION: eu-west-1
+  KONNECT_PAT_SECRET_ARN: "arn:aws:secretsmanager:eu-west-1:123456789012:secret:jack/demos/cp-sync-token-vMFbyJ"
+  KONG_IMAGE_REPOSITORY: "kong/kong-gateway"
+  KONNECT_REGION: "eu"
+  MODE: "apply"
+
+jobs:
+  apply:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Script
+        run: |
+          ./run.sh
+        shell: bash

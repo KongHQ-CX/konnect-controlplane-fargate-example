@@ -1,0 +1,4 @@
+.terraform/
+terraform-test/
+test/
+**/.DS_Store

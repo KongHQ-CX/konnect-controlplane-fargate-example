@@ -1,0 +1,31 @@
+control_planes:
+  - name: datadog-tests
+    description: "Testing Datadog integrations."
+    vpc_id: vpc-0123456789abcdef0
+    subnet_ids:
+      - subnet-0123456789abcdef0
+      - subnet-0123456789abcdef1
+    ecs_cluster: "jack-template-builder"
+    kong_image_repository: "kong/kong-gateway"
+    kong_image_tag: "3.5.0.3"
+    load_balancer_cert_arn: "arn:aws:acm:eu-west-1:123456789012:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
+  - name: automation-demo
+    description: "Testing Automation for Demo."
+    vpc_id: vpc-0123456789abcdef0
+    subnet_ids:
+      - subnet-0123456789abcdef0
+      - subnet-0123456789abcdef1
+    ecs_cluster: "jack-template-builder"
+    kong_image_repository: "kong/kong-gateway"
+    kong_image_tag: "3.5.0.3"
+    load_balancer_cert_arn: "arn:aws:acm:eu-west-1:123456789012:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
+  - name: demo-pm
+    description: "Testing Automation for Demo PM."
+    vpc_id: vpc-0123456789abcdef0
+    subnet_ids:
+      - subnet-0123456789abcdef0
+      - subnet-0123456789abcdef1
+    ecs_cluster: "jack-template-builder"
+    kong_image_repository: "kong/kong-gateway"
+    kong_image_tag: "3.5.0.3"
+    load_balancer_cert_arn: "arn:aws:acm:eu-west-1:123456789012:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
