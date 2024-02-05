@@ -1,12 +1,14 @@
 name: ci
 
 on:
-  push:
-    branches:
-      - "main"
+  pull_request:
+    types: [opened, reopened]
 
 env:
+  AWS_PAGER: ""
   KONNECT_PAT_SECRET_ARN: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:jack/demos/cp-sync-token-vMFbyJ"
+  KONG_IMAGE_REPOSITORY: "2153531552.ecr......"
+  KONNECT_REGION: "eu"
 
 jobs:
   docker:
@@ -17,5 +19,20 @@ jobs:
 
       - name: Run Script
         run: |
-          ./run.sh
+          ./run.sh plan
         shell: bash
+
+      - name: PR Comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs')
+            const fileString = fs.readFileSync('./out.txt')
+
+            github.issues.createComment({
+              issue_number: ${{ github.event.number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: fileString
+            })
