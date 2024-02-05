@@ -1,0 +1,21 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "main"
+
+env:
+  KONNECT_PAT_SECRET_ARN: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:jack/demos/cp-sync-token-vMFbyJ"
+
+jobs:
+  docker:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Script
+        run: |
+          ./run.sh
+        shell: bash
