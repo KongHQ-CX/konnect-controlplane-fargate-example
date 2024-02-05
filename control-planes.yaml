@@ -10,19 +10,6 @@ control_planes:
       - subnet-0a0e73ca1fe3ec11b
       - subnet-030d314843e5f227e
     ecs_cluster: "jack-template-builder"
+    kong_image_repository: "kong/kong-gateway"
     kong_image_tag: "3.5.0.3"
     load_balancer_cert_arn: "arn:aws:acm:eu-west-1:412431539555:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
-
-  # - name: new-cp
-  #   description: "Another new Control Plane."
-  #   labels:
-  #     zone: europe
-  #   aws_account: "412431539555"
-  #   aws_region: eu-west-1
-  #   vpc_id: vpc-02b37f5fafc2d3bc9
-  #   subnet_ids:
-  #     - subnet-0a0e73ca1fe3ec11b
-  #     - subnet-030d314843e5f227e
-  #   ecs_cluster: "jack-template-builder"
-  #   kong_image_tag: "3.5.0.3"
-  #   load_balancer_cert_arn: ""
