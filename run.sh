@@ -8,6 +8,45 @@ export KPAT=$(aws secretsmanager get-secret-value --secret-id ${KONNECT_PAT_SECR
 # output each entry as a single line json
 readarray CONTROL_PLANES < <(yq -o=j -I=0 '.control_planes[]' control-planes.yaml )
 
+if [ "$MODE" == "plan" ]
+then
+  echo -e "**SUMMARY OF CHANGES**\n\n" > out.txt
+  echo "control_planes: []" > control_planes_konnect.yaml
+
+  for CONTROL_PLANE in "${CONTROL_PLANES[@]}";
+  do
+    # identity mapping is a single json snippet representing a single entry
+    export name=$(echo "$CONTROL_PLANE" | yq '.name' -)
+
+    echo ""
+    echo "> Looking up control-plane: $name"
+    export AUTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --request GET \
+      --header 'Accept: application/json' \
+      --header "Authorization: Bearer ${KPAT}" \
+      --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}")
+
+    if [[ "$AUTH_STATUS" == 401 ]]
+    then
+      echo "!! Konnect PAT token is invalid, missing, or expired"
+      exit 1
+    fi
+
+    export FOUND_STATUS=$(curl -s --request GET \
+      --header 'Accept: application/json' \
+      --header "Authorization: Bearer ${KPAT}" \
+      --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" | yq -P e '.meta.page.total')
+
+    if [[ "$FOUND_STATUS" < 1 ]]
+    then
+      echo "> Control Plane $name does not exist - would create it..."
+
+      echo "-> Create: Konnect control-plane: '$name'" >> out.txt
+    fi
+
+    sleep 1
+  done
+fi
+
 if [ "$MODE" == "apply" ]
 then
   echo "control_planes: []" > control_planes_konnect.yaml
