@@ -10,7 +10,7 @@ readarray CONTROL_PLANES < <(yq -o=j -I=0 '.control_planes[]' control-planes.yam
 
 if [ "$MODE" == "plan" ]
 then
-  echo -e "**SUMMARY OF CHANGES**\n\n" > out.txt
+  echo -e "\`\`\`yaml\n**SUMMARY OF CHANGES**\n\n" > out.txt
   echo "control_planes: []" > control_planes_konnect.yaml
 
   for CONTROL_PLANE in "${CONTROL_PLANES[@]}";
@@ -45,6 +45,8 @@ then
 
     sleep 1
   done
+
+  echo "\`\`\`" > out.txt
 fi
 
 if [ "$MODE" == "apply" ]

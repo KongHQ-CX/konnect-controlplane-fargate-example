@@ -30,7 +30,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fs = require('fs')
-            const fileString = fs.readFileSync('./out.txt')
+            const fileString = fs.readFileSync('./out.txt').toString()
 
             github.rest.issues.createComment({
               issue_number: ${{ github.event.number }},
