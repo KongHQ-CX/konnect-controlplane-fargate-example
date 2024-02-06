@@ -12,8 +12,6 @@ control_planes:
     kong_image_tag: "3.5.0.3"
     load_balancer_cert_arn: "arn:aws:acm:eu-west-1:412431539555:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
     id: 772665f0-e811-4cd6-8110-0553e7844d8c
-    telemetry_endpoint: https://eeb273c339.eu.tp0.konghq.com
-    cluster_endpoint: https://eeb273c339.eu.cp0.konghq.com
     cluster_cert_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/cert-94hvCl"
     cluster_cert_key_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/key-Gt5MHu"
   - name: jack-new
@@ -29,7 +27,5 @@ control_planes:
     kong_image_tag: "3.5.0.3"
     load_balancer_cert_arn: "arn:aws:acm:eu-west-1:412431539555:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
     id: 6fa2841e-2d76-4774-a4e8-e367c634c2f3
-    telemetry_endpoint: https://9026b2f9fb.eu.tp0.konghq.com
-    cluster_endpoint: https://9026b2f9fb.eu.cp0.konghq.com
     cluster_cert_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/cert-94hvCl"
     cluster_cert_key_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/key-Gt5MHu"
