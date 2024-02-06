@@ -1,7 +1,10 @@
 module "kong_fargate" {
   source = "github.com/konghq-cx/konnect-terraform-ecs-fargate"
 
-  for_each = { for control_plane in local.control_planes.control_planes : control_plane.name => control_plane }
+  for_each = {
+    for control_plane in local.control_planes.control_planes : control_plane.name => control_plane
+    if lookup(control_plane, "cluster_cert_secret_arn", null) != null
+  }
 
   ecs_cluster_name = each.value["ecs_cluster"]
 

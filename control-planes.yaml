@@ -13,6 +13,8 @@ control_planes:
     load_balancer_cert_arn: "arn:aws:acm:eu-west-1:412431539555:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
     cluster_cert_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/cert-94hvCl"
     cluster_cert_key_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/key-Gt5MHu"
+    cluster_endpoint: https://somewhere.konghq.com/v2/cluster
+    telemetry_endpoint: https://somewhere.konghq.com/v2/telemetry
   - name: jack-new
     description: "New for demo"
     labels:
@@ -27,3 +29,5 @@ control_planes:
     load_balancer_cert_arn: "arn:aws:acm:eu-west-1:412431539555:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
     cluster_cert_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/cert-94hvCl"
     cluster_cert_key_secret_arn: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:konnect/cluster_certs/datadog-testing/key-Gt5MHu"
+    cluster_endpoint: https://somewhere.konghq.com/v2/cluster
+    telemetry_endpoint: https://somewhere.konghq.com/v2/telemetry
