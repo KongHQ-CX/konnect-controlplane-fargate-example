@@ -1,8 +1,16 @@
 control_planes:
   - name: datadog-tests
     description: "Testing Datadog integrations."
-    labels:
-      zone: europe
+    vpc_id: vpc-02b37f5fafc2d3bc9
+    subnet_ids:
+      - subnet-0a0e73ca1fe3ec11b
+      - subnet-030d314843e5f227e
+    ecs_cluster: "jack-template-builder"
+    kong_image_repository: "kong/kong-gateway"
+    kong_image_tag: "3.5.0.3"
+    load_balancer_cert_arn: "arn:aws:acm:eu-west-1:412431539555:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
+  - name: automation-demo
+    description: "Testing Automation for Demo."
     vpc_id: vpc-02b37f5fafc2d3bc9
     subnet_ids:
       - subnet-0a0e73ca1fe3ec11b
