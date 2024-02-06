@@ -46,7 +46,7 @@ then
     sleep 1
   done
 
-  echo "\`\`\`" > out.txt
+  echo "\`\`\`" >> out.txt
 fi
 
 if [ "$MODE" == "apply" ]
