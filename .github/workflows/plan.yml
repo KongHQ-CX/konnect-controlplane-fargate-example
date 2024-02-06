@@ -10,6 +10,7 @@ env:
   AWS_REGION: eu-west-1
   KONNECT_PAT_SECRET_ARN: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:jack/demos/cp-sync-token-vMFbyJ"
   KONNECT_REGION: "eu"
+  MODE: "plan"
 
 jobs:
   docker:
