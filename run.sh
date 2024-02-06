@@ -10,7 +10,7 @@ readarray CONTROL_PLANES < <(yq -o=j -I=0 '.control_planes[]' control-planes.yam
 
 if [ "$MODE" == "apply" ]
 then
-  echo -e "- control_planes:\n" > control_planes_konnect.json
+  echo "control_planes: []" > control_planes_konnect.yaml
 
   for CONTROL_PLANE in "${CONTROL_PLANES[@]}";
   do
@@ -77,9 +77,15 @@ EOF
       --header 'Accept: application/json' \
       --header "Authorization: Bearer ${KPAT}" \
       --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" |
-      yq -p=json - >> control_planes_konnect.json
-
+      yq -P '.data[0]' > current.yaml
+    
+    echo "> Decorating Git object with Konnect object for this control plane"
+    export CONTROL_PLANE_ID=$(cat current.yaml | yq '.id' -)
+    export CLUSTER_ENDPOINT=$(cat current.yaml | yq '.config.control_plane_endpoint' -)
+    export TELEMETRY_ENDPOINT=$(cat current.yaml | yq '.config.telemetry_endpoint' -)
+    yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .id = strenv(CONTROL_PLANE_ID)' control-planes.yaml
+    yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .cluster_endpoint = strenv(CLUSTER_ENDPOINT)' control-planes.yaml
+    yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .telemetry_endpoint = strenv(TELEMETRY_ENDPOINT)' control-planes.yaml
+    
   done
-
-  
 fi
