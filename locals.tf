@@ -1,3 +1,3 @@
 locals {
-  control_planes = yamldecode(file("../control-planes.yaml"))
+  control_planes = yamldecode(file("./control-planes.yaml"))
 }
