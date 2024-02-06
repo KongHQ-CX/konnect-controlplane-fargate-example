@@ -70,7 +70,7 @@ then
     sleep 1
   done
 
-  echo -e "\`\`\`\n\n**TERRAFORM PLAN**\n\`\`\` >> out.txt
+  echo -e "\`\`\`\n\n**TERRAFORM PLAN**\n\`\`\`" >> out.txt
   terraform init -upgrade
   terraform plan -no-color >> out.txt
 
