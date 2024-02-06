@@ -7,6 +7,7 @@ on:
 
 env:
   AWS_PAGER: ""
+  AWS_REGION: eu-west-1
   KONNECT_PAT_SECRET_ARN: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:jack/demos/cp-sync-token-vMFbyJ"
   KONG_IMAGE_REPOSITORY: "kong/kong-gateway"
   KONNECT_REGION: "eu"
