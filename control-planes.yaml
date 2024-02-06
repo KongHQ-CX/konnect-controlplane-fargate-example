@@ -11,6 +11,3 @@ control_planes:
     kong_image_repository: "kong/kong-gateway"
     kong_image_tag: "3.5.0.3"
     load_balancer_cert_arn: "arn:aws:acm:eu-west-1:412431539555:certificate/6b3656af-4c08-4cab-9525-703949a7b2cf"
-    cluster_endpoint: "https://eea7a7a081.eu.cp0.konghq.com"
-    telemetry_endpoint: "https://eea7a7a081.eu.tp0.konghq.com"
-    id: "b36db456-3956-4cd9-b9c8-7a62c6ddf380"
