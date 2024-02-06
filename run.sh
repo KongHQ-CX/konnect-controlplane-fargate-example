@@ -10,7 +10,7 @@ readarray CONTROL_PLANES < <(yq -o=j -I=0 '.control_planes[]' control-planes.yam
 
 if [ "$MODE" == "plan" ]
 then
-  echo -e "\`\`\`yaml\n**SUMMARY OF CHANGES**\n\n" > out.txt
+  echo -e "**SUMMARY OF CHANGES**\n\n\`\`\`yaml\n" > out.txt
   echo "control_planes: []" > control_planes_konnect.yaml
 
   for CONTROL_PLANE in "${CONTROL_PLANES[@]}";
@@ -41,10 +41,38 @@ then
       echo "> Control Plane $name does not exist - would create it..."
 
       echo "-> Create: Konnect control-plane: '$name'" >> out.txt
+
+      echo "> Pre-decorating Git object with Konnect object for this control plane"
+      export CONTROL_PLANE_ID="not_yet_known"
+      export CLUSTER_ENDPOINT="not_yet_known"
+      export TELEMETRY_ENDPOINT="not_yet_known"
+      yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .id = strenv(CONTROL_PLANE_ID)' control-planes.yaml
+      yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .cluster_endpoint = strenv(CLUSTER_ENDPOINT)' control-planes.yaml
+      yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .telemetry_endpoint = strenv(TELEMETRY_ENDPOINT)' control-planes.yaml
+
+    else
+      echo "> Reading back new control plane info for Terraform"
+      curl -s --request GET \
+        --header 'Accept: application/json' \
+        --header "Authorization: Bearer ${KPAT}" \
+        --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" |
+        yq -P '.data[0]' > current.yaml
+      
+      echo "> Decorating Git object with Konnect object for this control plane"
+      export CONTROL_PLANE_ID=$(cat current.yaml | yq '.id' -)
+      export CLUSTER_ENDPOINT=$(cat current.yaml | yq '.config.control_plane_endpoint' -)
+      export TELEMETRY_ENDPOINT=$(cat current.yaml | yq '.config.telemetry_endpoint' -)
+      yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .id = strenv(CONTROL_PLANE_ID)' control-planes.yaml
+      yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .cluster_endpoint = strenv(CLUSTER_ENDPOINT)' control-planes.yaml
+      yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .telemetry_endpoint = strenv(TELEMETRY_ENDPOINT)' control-planes.yaml
     fi
 
     sleep 1
   done
+
+  echo -e "\`\`\`\n\n**TERRAFORM PLAN**\n\`\`\`" >> out.txt
+  terraform init -upgrade
+  terraform plan -no-color >> out.txt
 
   echo "\`\`\`" >> out.txt
 fi
@@ -59,7 +87,6 @@ then
     export name=$(echo "$CONTROL_PLANE" | yq '.name' -)
     export desc=$(echo "$CONTROL_PLANE" | yq '.description' -)
     export aws_account=$(echo "$CONTROL_PLANE" | yq '.aws_account' -)
-    export aws_region=$(echo "$CONTROL_PLANE" | yq '.aws_region' -)
     export ecs_cluster=$(echo "$CONTROL_PLANE" | yq '.ecs_cluster' -)
 
     echo ""
@@ -90,8 +117,8 @@ then
   "description": "$description",
   "cluster_type": "CLUSTER_TYPE_HYBRID",
   "labels": {
-    "aws_region": "$aws_region",
-    "aws_account": "$aws_account",
+    "aws_region": "$AWS_REGION",
+    "aws_account": "$(aws sts get-caller-identity --output text --query "Account")",
     "ecs_cluster": "$ecs_cluster"
   }
 }
@@ -129,4 +156,7 @@ EOF
     yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .telemetry_endpoint = strenv(TELEMETRY_ENDPOINT)' control-planes.yaml
     
   done
+
+  terraform init -upgrade
+  terraform apply --auto-approve
 fi
