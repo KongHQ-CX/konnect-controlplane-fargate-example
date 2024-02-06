@@ -72,7 +72,7 @@ then
 
   echo -e "\`\`\`\n\n**TERRAFORM PLAN**\n\`\`\`" >> out.txt
   terraform init -upgrade
-  terraform plan -no-color >> out.txt
+  terraform plan -var "konnect_pat=${KPAT}" -no-color >> out.txt
 
   echo "\`\`\`" >> out.txt
 fi
@@ -158,5 +158,5 @@ EOF
   done
 
   terraform init -upgrade
-  terraform apply --auto-approve
+  terraform apply -var "konnect_pat=${KPAT}" --auto-approve
 fi

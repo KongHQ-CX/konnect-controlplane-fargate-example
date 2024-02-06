@@ -1,5 +1,5 @@
 module "kong_fargate" {
-  source = "../konnect-terraform-ecs-fargate"
+  source = "github.com/konghq-cx/konnect-terraform-ecs-fargate"
 
   for_each = {
     for control_plane in local.control_planes.control_planes : control_plane.name => control_plane
