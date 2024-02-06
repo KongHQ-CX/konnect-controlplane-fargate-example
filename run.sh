@@ -156,4 +156,7 @@ EOF
     yq e -i '.control_planes[] |= select(.name == strenv(name)) |= .telemetry_endpoint = strenv(TELEMETRY_ENDPOINT)' control-planes.yaml
     
   done
+
+  terraform init -upgrade
+  terraform apply --auto-approve
 fi

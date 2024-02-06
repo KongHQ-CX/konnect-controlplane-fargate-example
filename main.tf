@@ -19,3 +19,11 @@ module "kong_fargate" {
   vpc_id = each.value["vpc_id"]
   subnets = each.value["subnet_ids"]
 }
+
+terraform {
+  backend "s3" {
+    bucket = "cx-emea-terraform-state"
+    key    = "jack.tysoe/fargate-demo.tfstate"
+    region = "eu-west-1"
+  }
+}
