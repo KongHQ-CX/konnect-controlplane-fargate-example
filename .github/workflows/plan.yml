@@ -31,6 +31,7 @@ jobs:
           script: |
             const fs = require('fs')
             const fileString = fs.readFileSync('./out.txt').toString()
+            console.log(fileString)
 
             github.rest.issues.createComment({
               issue_number: ${{ github.event.number }},
