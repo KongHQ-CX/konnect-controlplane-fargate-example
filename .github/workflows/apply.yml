@@ -14,7 +14,7 @@ env:
   MODE: "apply"
 
 jobs:
-  docker:
+  apply:
     runs-on: [self-hosted, linux]
     steps:
       - name: Checkout

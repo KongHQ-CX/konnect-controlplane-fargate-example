@@ -1,5 +1,6 @@
 name: ci
 
+
 on:
   pull_request:
     types: [opened, reopened]
@@ -9,9 +10,10 @@ env:
   AWS_REGION: eu-west-1
   KONNECT_PAT_SECRET_ARN: "arn:aws:secretsmanager:eu-west-1:412431539555:secret:jack/demos/cp-sync-token-vMFbyJ"
   KONNECT_REGION: "eu"
+  MODE: "plan"
 
 jobs:
-  docker:
+  plan:
     runs-on: [self-hosted, linux]
     steps:
       - name: Checkout
@@ -28,9 +30,10 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fs = require('fs')
-            const fileString = fs.readFileSync('./out.txt')
+            const fileString = fs.readFileSync('./out.txt').toString()
+            console.log(fileString)
 
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: ${{ github.event.number }},
               owner: context.repo.owner,
               repo: context.repo.repo,
