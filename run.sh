@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "> We are in Konnect Region: '${KONNECT_REGION}'"
+#echo "> We are in Konnect Region: '${KONNECT_REGION}'"
 
-export KPAT=$(aws secretsmanager get-secret-value --secret-id ${KONNECT_PAT_SECRET_ARN} --output text --query 'SecretString')
+#export KPAT=$(aws secretsmanager get-secret-value --secret-id ${KONNECT_PAT_SECRET_ARN} --output text --query 'SecretString')
 
 # load array into a bash array
 # output each entry as a single line json
@@ -22,8 +22,8 @@ then
     echo "> Looking up control-plane: $name"
     export AUTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --request GET \
       --header 'Accept: application/json' \
-      --header "Authorization: Bearer ${KPAT}" \
-      --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}")
+      --header "Authorization: Bearer ${var.konnect_pat}" \
+      --url "https://eu.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}")
 
     if [[ "$AUTH_STATUS" == 401 ]]
     then
@@ -33,8 +33,8 @@ then
 
     export FOUND_STATUS=$(curl -s --request GET \
       --header 'Accept: application/json' \
-      --header "Authorization: Bearer ${KPAT}" \
-      --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" | yq -P e '.meta.page.total')
+      --header "Authorization: Bearer ${var.konnect_pat}" \
+      --url "https://eu.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" | yq -P e '.meta.page.total')
 
     if [[ "$FOUND_STATUS" < 1 ]]
     then
@@ -54,8 +54,8 @@ then
       echo "> Reading back new control plane info for Terraform"
       curl -s --request GET \
         --header 'Accept: application/json' \
-        --header "Authorization: Bearer ${KPAT}" \
-        --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" |
+        --header "Authorization: Bearer ${var.connect_pat}" \
+        --url "https://eu.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" |
         yq -P '.data[0]' > current.yaml
       
       echo "> Decorating Git object with Konnect object for this control plane"
@@ -72,7 +72,7 @@ then
 
   echo -e "\`\`\`\n\n**TERRAFORM PLAN**\n\`\`\`" >> out.txt
   terraform init -upgrade
-  terraform plan -var "konnect_pat=${KPAT}" -no-color >> out.txt
+  terraform plan -no-color >> out.txt
 
   echo "\`\`\`" >> out.txt
 fi
@@ -86,15 +86,15 @@ then
     # identity mapping is a single json snippet representing a single entry
     export name=$(echo "$CONTROL_PLANE" | yq '.name' -)
     export desc=$(echo "$CONTROL_PLANE" | yq '.description' -)
-    export aws_account=$(echo "$CONTROL_PLANE" | yq '.aws_account' -)
-    export ecs_cluster=$(echo "$CONTROL_PLANE" | yq '.ecs_cluster' -)
+    #export aws_account=$(echo "$CONTROL_PLANE" | yq '.aws_account' -)
+    #export ecs_cluster=$(echo "$CONTROL_PLANE" | yq '.ecs_cluster' -)
 
     echo ""
     echo "> Looking up control-plane: $name"
     export AUTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --request GET \
       --header 'Accept: application/json' \
-      --header "Authorization: Bearer ${KPAT}" \
-      --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}")
+      --header "Authorization: Bearer ${var.konnect_pat}" \
+      --url "https://eu.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}")
 
     if [[ "$AUTH_STATUS" == 401 ]]
     then
@@ -104,8 +104,8 @@ then
 
     export FOUND_STATUS=$(curl -s --request GET \
       --header 'Accept: application/json' \
-      --header "Authorization: Bearer ${KPAT}" \
-      --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" | yq -P e '.meta.page.total')
+      --header "Authorization: Bearer ${var.konnect_pat}" \
+      --url "https://eu.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" | yq -P e '.meta.page.total')
 
     if [[ "$FOUND_STATUS" < 1 ]]
     then
@@ -116,19 +116,15 @@ then
   "name": "$name",
   "description": "$description",
   "cluster_type": "CLUSTER_TYPE_HYBRID",
-  "labels": {
-    "aws_region": "$AWS_REGION",
-    "aws_account": "$(aws sts get-caller-identity --output text --query "Account")",
-    "ecs_cluster": "$ecs_cluster"
-  }
+   
 }
 EOF
 
       export CREATED_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --request POST \
         --header 'Accept: application/json' \
         --header 'Content-Type: application/json' \
-        --header "Authorization: Bearer ${KPAT}" \
-        --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes" \
+        --header "Authorization: Bearer ${var.konnect_pat}" \
+        --url "https://eu.api.konghq.com/v2/control-planes" \
         -d @control_plane.json)
 
       if [[ "$CREATED_STATUS" != 201 ]]
@@ -143,8 +139,8 @@ EOF
     echo "> Reading back new control plane info for Terraform"
     curl -s --request GET \
       --header 'Accept: application/json' \
-      --header "Authorization: Bearer ${KPAT}" \
-      --url "https://${KONNECT_REGION}.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" |
+      --header "Authorization: Bearer ${var.konnect_pat}" \
+      --url "https://eu.api.konghq.com/v2/control-planes?filter%5Bname%5D%5Beq%5D=${name}" |
       yq -P '.data[0]' > current.yaml
     
     echo "> Decorating Git object with Konnect object for this control plane"
@@ -158,5 +154,5 @@ EOF
   done
 
   terraform init -upgrade
-  terraform apply -var "konnect_pat=${KPAT}" --auto-approve
+  terraform apply --auto-approve
 fi
